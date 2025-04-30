@@ -12,21 +12,25 @@
     <!-- Eingabefeld -->
     <input type="text" id="input" placeholder="Gib ein Stichwort ein..." autofocus />
 
-    <!-- Vorschlagszeile -->
-    <div id="suggestions" class="suggestion-row"></div>
+    <!-- Autocomplete-Vorschläge -->
+    <div id="autocomplete" class="suggestion-row"></div>
 
     <!-- Virtuelle Tastatur -->
-    <div id="keyboard"></div>
+    <div id="keyboard" class="keyboard"></div>
 
     <!-- Steuerbuttons -->
     <div id="controls">
       <button id="generate" class="control wide">🧠 Vorschläge</button>
       <button id="speak" class="control">🗣 Sprechen</button>
       <button id="clear" class="control">🗑 Löschen</button>
-      <button id="lang-toggle" class="control">🌍 Deutsch</button>
+      <button id="language" class="control">🌍 DE</button>
     </div>
 
+    <!-- Chatverlauf (optional sichtbar machen) -->
+    <div id="chat" class="chat-display"></div>
+
   </div>
+
   <script src="/static/app.js"></script>
 </body>
 </html>
