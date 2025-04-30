@@ -1,4 +1,4 @@
-// 📄 app.js – mit funktionierendem Autocomplete
+// 📄 app.js – aktualisiert für QWERTZ-Tastatur und funktionierendes Autocomplete
 
 const input = document.getElementById("input");
 const langBtn = document.getElementById("language");
@@ -10,7 +10,15 @@ const autoFrame = document.getElementById("autocomplete");
 
 let lang = "de";
 
-// 🔡 Autocomplete-Wortlisten (je 500)
+// ⌨️ Tastatur-Layout
+const layout = [
+  ["Q", "W", "E", "R", "T", "Z", "U", "I", "O", "P"],
+  ["A", "S", "D", "F", "G", "H", "J", "K", "L"],
+  ["Y", "X", "C", "V", "B", "N", "M", "Ä", "Ö", "Ü"],
+  ["LEER", "←"]
+];
+
+// 🧠 Autocomplete-Wörter (hier musst du deine echten 1000 einfügen)
 const autocompleteWords = {
   de: [
     "DER", "DIE", "UND", "IN", "DEN", "VON", "ZU", "DAS", "MIT", "SICH",
@@ -191,14 +199,7 @@ const autocompleteWords = {
   ]
 };
 
-// ⌨️ Tastatur erzeugen
-const layout = [
-  ["Q", "W", "E", "R", "T", "Z", "U", "I", "O", "P"],
-  ["A", "S", "D", "F", "G", "H", "J", "K", "L"],
-  ["Y", "X", "C", "V", "B", "N", "M", "Ä", "Ö", "Ü"],
-  ["LEER", "←"]
-];
-
+// 🔤 Tastatur zeichnen
 layout.forEach(row => {
   const rowDiv = document.createElement("div");
   row.forEach(key => {
@@ -223,7 +224,7 @@ langBtn.onclick = () => {
   autocomplete();
 };
 
-// 🔤 Autocomplete-Funktion
+// 🔤 Autocomplete
 function autocomplete() {
   const words = autocompleteWords[lang];
   const current = input.value.trim();
@@ -246,7 +247,7 @@ function autocomplete() {
   });
 }
 
-// 🧠 Vorschläge generieren
+// Vorschläge generieren (GPT)
 generateBtn.onclick = async () => {
   const text = input.value.trim();
   if (!text) return;
@@ -263,25 +264,24 @@ generateBtn.onclick = async () => {
     btn.className = "suggestion";
     btn.onclick = async () => {
       input.value = "";
-      const speakRes = await fetch("/speak", {
+      await fetch("/speak", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ text: s, lang })
       });
-      chat.innerHTML += `<div class="bubble">${s}</div>`;
+      chat.innerHTML += `<div class='bubble'>${s}</div>`;
       chat.scrollTop = chat.scrollHeight;
     };
     autoFrame.appendChild(btn);
   });
 };
 
-// 🧹 Eingabe löschen
+// Eingabe löschen
 clearBtn.onclick = () => {
   input.value = "";
   autoFrame.innerHTML = "";
   autocomplete();
 };
 
-// 🔁 Live-Autocomplete bei Tipp
 input.addEventListener("input", autocomplete);
 autocomplete();
