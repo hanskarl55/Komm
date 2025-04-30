@@ -1,7 +1,6 @@
 const input = document.getElementById("input");
 const keyboard = document.getElementById("keyboard");
 const suggestionsDiv = document.getElementById("suggestions");
-const autoFrame = document.getElementById("autocomplete");
 
 let lang = "de";
 
