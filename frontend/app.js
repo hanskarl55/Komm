@@ -1,13 +1,19 @@
+// 📄 app.js – mit funktionierendem Autocomplete
+
 const input = document.getElementById("input");
+const langBtn = document.getElementById("language");
+const generateBtn = document.getElementById("generate");
+const clearBtn = document.getElementById("clear");
+const chat = document.getElementById("chat");
 const keyboard = document.getElementById("keyboard");
-const suggestionsDiv = document.getElementById("suggestions");
+const autoFrame = document.getElementById("autocomplete");
 
 let lang = "de";
 
 // 🔡 Autocomplete-Wortlisten (je 500)
 const autocompleteWords = {
   de: [
-"DER", "DIE", "UND", "IN", "DEN", "VON", "ZU", "DAS", "MIT", "SICH",
+    "DER", "DIE", "UND", "IN", "DEN", "VON", "ZU", "DAS", "MIT", "SICH",
     "DES", "AUF", "FÜR", "IST", "IM", "DEM", "NICHT", "EIN", "EINE", "ALS",
     "AUCH", "ES", "AN", "WERDEN", "AUS", "ER", "HAT", "DASS", "SIE", "NACH",
     "WIRD", "BEI", "EINER", "UM", "AM", "SIND", "NOCH", "WIE", "EINEM", "ÜBER",
@@ -95,7 +101,7 @@ const autocompleteWords = {
     "STERN", "MOND", "SONNE", "HIMMEL", "WOLKE", "REGEN", "BLITZ", "DONNER", "NEBEL", "REGENBOGEN"
   ],
   es: [
-"DE", "LA", "QUE", "EL", "EN", "Y", "A", "LOS", "DEL", "SE",
+    "DE", "LA", "QUE", "EL", "EN", "Y", "A", "LOS", "DEL", "SE",
     "LAS", "POR", "UN", "CON", "NO", "UNA", "SU", "PARA", "ES", "AL",
     "LO", "COMO", "MÁS", "O", "PERO", "SUS", "LE", "YA", "O", "ESTE",
     "SÍ", "ENTRE", "CUANDO", "TODO", "ESTA", "SER", "SON", "DOS", "TAMBIÉN", "FUE",
@@ -142,7 +148,7 @@ const autocompleteWords = {
     "PUENTE", "TÚNEL", "AUTOPISTA", "CARRETERA", "SEÑAL", "SEMÁFORO", "CRUCE", "PEATÓN", "ACERA", "ASFALTO",
     "EDIFICIO", "CASA", "APARTAMENTO", "PISO", "BALCÓN", "JARDÍN", "GARAJE", "ESCALERA", "ASCENSOR", "VENTANA",
 
-  "PUERTA", "TECHO", "PARED", "SUELO", "HABITACIÓN", "COCINA", "BAÑO", "SALÓN", "DORMITORIO", "OFICINA",
+    "PUERTA", "TECHO", "PARED", "SUELO", "HABITACIÓN", "COCINA", "BAÑO", "SALÓN", "DORMITORIO", "OFICINA",
     "ESCRITORIO", "SILLA", "MESA", "CAMA", "ARMARIO", "ESPEJO", "LÁMPARA", "TELEVISOR", "TELÉFONO", "COMPUTADORA",
     "ORDENADOR", "PORTÁTIL", "IMPRESORA", "CÁMARA", "RADIO", "INTERNET", "RED", "WI-FI", "CABLE", "ENCHUFE",
     "BATERÍA", "CARGADOR", "BOTÓN", "PANTALLA", "TECLADO", "RATÓN", "ALTAVOZ", "AURICULARES", "MICRÓFONO", "RELOJ",
@@ -163,7 +169,7 @@ const autocompleteWords = {
     "TOBILLO", "PIES", "CORAZÓN", "PULMONES", "CEREBRO", "ESTÓMAGO", "HÍGADO", "RIÑONES", "SANGRE", "HUESOS",
     "MÚSCULOS", "PIEL", "ENFERMEDAD", "SALUD", "DOCTOR", "ENFERMERO", "HOSPITAL", "CLÍNICA", "FARMACIA", "MEDICINA",
 
-   "PASTILLA", "JARABE", "INYECCIÓN", "VENDAJE", "CURA", "CITA MÉDICA", "EMERGENCIA", "URGENCIA", "AMBULANCIA", "OPERACIÓN",
+    "PASTILLA", "JARABE", "INYECCIÓN", "VENDAJE", "CURA", "CITA MÉDICA", "EMERGENCIA", "URGENCIA", "AMBULANCIA", "OPERACIÓN",
     "TERAPIA", "SÍNTOMA", "DIAGNÓSTICO", "REVISIÓN", "EXAMEN MÉDICO", "VACUNA", "ALERGIA", "FIEBRE", "DOLOR", "TOS",
     "RESFRIADO", "GRIPE", "VÓMITO", "DIARREA", "MAREO", "FATIGA", "ESTRÉS", "DEPRESIÓN", "ANSIEDAD", "TRANQUILO",
     "NERVIOSO", "CONTENTO", "TRISTE", "ENFADADO", "PREOCUPADO", "SORPRENDIDO", "ABURRIDO", "CANSADO", "ENERGÍA", "FUERZA",
@@ -185,121 +191,97 @@ const autocompleteWords = {
   ]
 };
 
-// Autocomplete-Container
-const autoFrame = document.createElement("div");
-autoFrame.id = "autocomplete";
-input.insertAdjacentElement("afterend", autoFrame);
-
-// Tastatur
-const keys = [
+// ⌨️ Tastatur erzeugen
+const layout = [
   ["Q", "W", "E", "R", "T", "Z", "U", "I", "O", "P"],
-  ["A", "S", "D", "F", "G", "H", "J", "K", "L", "Ä"],
-  ["Y", "X", "C", "V", "B", "N", "M", "Ö", "Ü", "←"],
-  ["␣"]
+  ["A", "S", "D", "F", "G", "H", "J", "K", "L"],
+  ["Y", "X", "C", "V", "B", "N", "M", "Ä", "Ö", "Ü"],
+  ["LEER", "←"]
 ];
 
-function renderKeyboard() {
-  keyboard.innerHTML = "";
-  keys.forEach((row) => {
-    row.forEach((key) => {
-      const btn = document.createElement("button");
-      btn.textContent = key;
-      btn.className = "key";
-      if (key === "␣") btn.classList.add("space");
-
-      btn.onclick = () => {
-        if (key === "←") {
-          input.value = input.value.slice(0, -1);
-        } else if (key === "␣") {
-          input.value += " ";
-        } else {
-          input.value += key;
-        }
-        autocomplete();
-      };
-
-      keyboard.appendChild(btn);
-    });
-  });
-}
-
-async function fetchSuggestions() {
-  const res = await fetch("/gpt", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ text: input.value, lang: lang })
-  });
-  const data = await res.json();
-  showSuggestions(data.suggestions || []);
-}
-
-function showSuggestions(list) {
-  suggestionsDiv.innerHTML = "";
-  list.forEach((s) => {
+layout.forEach(row => {
+  const rowDiv = document.createElement("div");
+  row.forEach(key => {
     const btn = document.createElement("button");
-    btn.textContent = s;
-    btn.className = "suggestion";
-    btn.onclick = () => speakText(s);
-    suggestionsDiv.appendChild(btn);
+    btn.textContent = key;
+    btn.className = "key";
+    btn.onclick = () => {
+      if (key === "LEER") input.value += " ";
+      else if (key === "←") input.value = input.value.slice(0, -1);
+      else input.value += key;
+      autocomplete();
+    };
+    rowDiv.appendChild(btn);
   });
-}
+  keyboard.appendChild(rowDiv);
+});
 
-async function speakText(text) {
-  const res = await fetch("/tts", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ text: text, lang: lang })
-  });
-  const data = await res.json();
-  const audio = new Audio(`data:audio/mp3;base64,${data.audio}`);
-  audio.play();
-}
-
-document.getElementById("clear").onclick = () => {
-  input.value = "";
-  suggestionsDiv.innerHTML = "";
-  autoFrame.innerHTML = "";
-};
-
-document.getElementById("lang-toggle").onclick = () => {
+// 🔁 Sprache wechseln
+langBtn.onclick = () => {
   lang = lang === "de" ? "es" : "de";
-  document.getElementById("lang-toggle").textContent =
-    lang === "de" ? "🌍 Deutsch" : "🌍 Spanisch";
-  autocomplete(); // Update Vorschläge nach Sprachwechsel
+  langBtn.textContent = lang.toUpperCase();
+  autocomplete();
 };
 
-document.getElementById("generate").onclick = fetchSuggestions;
-
-document.getElementById("speak").onclick = () => {
-  const text = input.value.trim();
-  if (text.length > 0) {
-    speakText(text);
-  }
-};
-
-// Autocomplete: Vorschläge auf Basis des letzten Wortes
+// 🔤 Autocomplete-Funktion
 function autocomplete() {
-  autoFrame.innerHTML = "";
   const words = autocompleteWords[lang];
   const current = input.value.trim();
   const parts = current.split(" ");
-  const last = parts[parts.length - 1].toLowerCase();
-
-  if (!last || last.length < 1) return;
+  const last = parts[parts.length - 1].toUpperCase();
 
   const matches = words.filter(w => w.startsWith(last) && w !== last).slice(0, 5);
-  matches.forEach(word => {
+
+  autoFrame.innerHTML = "";
+  matches.forEach(match => {
     const btn = document.createElement("button");
-    btn.textContent = word;
+    btn.textContent = match;
     btn.className = "suggestion";
     btn.onclick = () => {
-      parts[parts.length - 1] = word;
+      parts[parts.length - 1] = match;
       input.value = parts.join(" ") + " ";
-      autoFrame.innerHTML = "";
+      autocomplete();
     };
     autoFrame.appendChild(btn);
   });
 }
 
+// 🧠 Vorschläge generieren
+generateBtn.onclick = async () => {
+  const text = input.value.trim();
+  if (!text) return;
+  const res = await fetch("/suggest", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ text, lang })
+  });
+  const data = await res.json();
+  autoFrame.innerHTML = "";
+  data.suggestions.forEach(s => {
+    const btn = document.createElement("button");
+    btn.textContent = s;
+    btn.className = "suggestion";
+    btn.onclick = async () => {
+      input.value = "";
+      const speakRes = await fetch("/speak", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text: s, lang })
+      });
+      chat.innerHTML += `<div class="bubble">${s}</div>`;
+      chat.scrollTop = chat.scrollHeight;
+    };
+    autoFrame.appendChild(btn);
+  });
+};
+
+// 🧹 Eingabe löschen
+clearBtn.onclick = () => {
+  input.value = "";
+  autoFrame.innerHTML = "";
+  autocomplete();
+};
+
+// 🔁 Live-Autocomplete bei Tipp
 input.addEventListener("input", autocomplete);
-renderKeyboard();
+autocomplete();
