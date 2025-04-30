@@ -1,103 +1,110 @@
 body {
+  background-color: #1e1e1e;
+  color: white;
   font-family: sans-serif;
-  background: #1e1e1e;
   margin: 0;
   padding: 0;
-  color: white;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
+  overflow-x: hidden;
 }
 
 .container {
-  width: 100%;
-  max-width: 1024px;
-  padding: 1em;
-  display: flex;
-  flex-direction: column;
-  gap: 1em;
-  box-sizing: border-box;
+  max-width: 100%;
+  padding: 10px;
 }
 
-input {
+input#input {
   width: 100%;
-  font-size: 2em;
-  padding: 0.7em;
-  border-radius: 6px;
+  padding: 16px;
+  font-size: 24px;
+  margin-bottom: 10px;
+  border-radius: 10px;
   border: none;
-  background: #f5f5f5;
-  color: black;
 }
 
-.suggestion-row {
+#autocomplete {
   display: flex;
-  justify-content: space-between;
-  gap: 1em;
-  margin-top: 0.5em;
-  flex-wrap: nowrap;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 15px;
 }
 
-.suggestion {
-  flex: 1;
-  font-size: 1.5em;
-  padding: 0.8em;
-  background: #2e3b4e;
-  color: white;
-  border: 2px solid #448aff;
+#autocomplete button {
+  padding: 10px 16px;
+  font-size: 18px;
+  border: none;
   border-radius: 8px;
-  text-align: center;
+  background-color: #444;
+  color: white;
   cursor: pointer;
+}
+
+#autocomplete button:hover {
+  background-color: #666;
 }
 
 #keyboard {
-  display: grid;
-  grid-template-columns: repeat(10, 1fr);
-  gap: 0.5em;
-  justify-items: center;
-  margin-top: 1em;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 15px;
+}
+
+#keyboard div {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
 }
 
 .key {
-  font-size: 1.5em;
-  padding: 1em;
-  width: 100%;
-  max-width: 80px;
-  height: 80px;
-  background: #333;
-  color: white;
-  border: 1px solid #555;
+  padding: 18px 22px;
+  font-size: 20px;
+  border: none;
   border-radius: 6px;
+  background-color: #333;
+  color: white;
   cursor: pointer;
+  min-width: 48px;
+  text-align: center;
 }
 
-.space {
-  grid-column: span 10;
-  width: 100%;
-  max-width: none;
+.key:hover {
+  background-color: #555;
 }
 
 #controls {
   display: flex;
   justify-content: space-between;
-  gap: 1em;
-  margin-top: 1em;
+  margin-top: 15px;
   flex-wrap: wrap;
+  gap: 10px;
 }
 
-button.control {
-  font-size: 1.4em;
-  padding: 1em;
-  background: #444;
+.control {
+  flex: 1;
+  padding: 16px;
+  font-size: 18px;
+  border-radius: 10px;
+  background-color: #007bff;
   color: white;
   border: none;
-  border-radius: 6px;
   cursor: pointer;
-  flex: 1;
+  text-align: center;
   min-width: 150px;
 }
 
-button.control.wide {
+.control:hover {
+  background-color: #0056b3;
+}
+
+.control.wide {
   flex: 2;
-  background: #1565c0;
+}
+
+.chat-display {
+  max-height: 200px;
+  overflow-y: auto;
+  margin-top: 10px;
+  padding: 10px;
+  background-color: #111;
+  border-radius: 10px;
 }
