@@ -1,13 +1,14 @@
 const input = document.getElementById("input");
 const keyboard = document.getElementById("keyboard");
 const suggestionsDiv = document.getElementById("suggestions");
+const autoFrame = document.getElementById("autocomplete");
 
 let lang = "de";
 
 // 🔡 Autocomplete-Wortlisten (je 500)
 const autocompleteWords = {
   de: [
-"DER", "DIE", "UND", "IN", "DEN", "VON", "ZU", "DAS", "MIT", "SICH",
+    "DER", "DIE", "UND", "IN", "DEN", "VON", "ZU", "DAS", "MIT", "SICH",
     "DES", "AUF", "FÜR", "IST", "IM", "DEM", "NICHT", "EIN", "EINE", "ALS",
     "AUCH", "ES", "AN", "WERDEN", "AUS", "ER", "HAT", "DASS", "SIE", "NACH",
     "WIRD", "BEI", "EINER", "UM", "AM", "SIND", "NOCH", "WIE", "EINEM", "ÜBER",
