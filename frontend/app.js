@@ -251,7 +251,7 @@ function autocomplete() {
 generateBtn.onclick = async () => {
   const text = input.value.trim();
   if (!text) return;
-  const res = await fetch("/suggest", {
+  const res = await fetch("/gpt", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ text, lang })
@@ -264,7 +264,7 @@ generateBtn.onclick = async () => {
     btn.className = "suggestion";
     btn.onclick = async () => {
       input.value = "";
-      await fetch("/speak", {
+      await fetch("/tts", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ text: s, lang })
